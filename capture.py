@@ -8,8 +8,10 @@ from post import post_numbers
 from videorand import serialize_frame
 
 parser = OptionParser()
-parser.add_option("-f", "--key", dest="key",
+parser.add_option("-k", "--key", dest="key",
                   help="key address of the host", metavar="KEY")
+parser.add_option("-s", "--show", dest="show",
+                  help="show the camera output", metavar="SHOW")
 
 (options, args) = parser.parse_args()
 if options.key is None:
@@ -17,6 +19,8 @@ if options.key is None:
     sys.exit()
 
 print("key is", options.key)
+
+show = options.show is not None
 
 np.seterr(over='ignore')
 cap = cv2.VideoCapture(0)
@@ -62,7 +66,8 @@ while cap.isOpened():
         numbers[currentNumber] = int(sid)
         currentNumber += 1
 
-        # cv2.imshow('frame', frame)
+        if show:
+            cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     else:
