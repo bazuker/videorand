@@ -8,10 +8,15 @@ from post import post_numbers
 from videorand import serialize_frame
 
 parser = OptionParser()
+parser.add_option("-a", "--addr", dest="addr",
+                  help="address to publish", metavar="ADDR")
 parser.add_option("-k", "--key", dest="key",
                   help="key address of the host", metavar="KEY")
+parser.add_option("-f", "--footprint", dest="footprint",
+                  help="maximum amount of numbers to keep in cache", metavar="FOOT")
 parser.add_option("-s", "--show", dest="show",
                   help="show the camera output", metavar="SHOW")
+
 
 (options, args) = parser.parse_args()
 if options.key is None:
@@ -19,6 +24,28 @@ if options.key is None:
     sys.exit()
 
 print("key is", options.key)
+
+addr = "127.0.0.1:7890"
+
+if options.addr is None:
+    print("address was not provided, using default")
+else:
+    addr = options.addr
+
+if not (addr.startswith("http://") or addr.startswith("https://")):
+    addr = "http://" + addr
+
+if not addr.endswith("/"):
+    addr = addr + "/"
+
+print("target address is", addr)
+
+max_footprint = 1000
+
+if options.footprint is not None:
+    max_footprint = options.footprint
+
+print("max footprint:", max_footprint)
 
 show = options.show is not None
 
@@ -31,12 +58,11 @@ currentNumber = 0
 for i in range(0, max_numbers):
     numbers.append(i)
 
-print("capturing the video...")
 print("max frames:", max_numbers)
 print("chunk size:", chunk_size)
+print("capturing the video...")
 
 footprint = {}
-max_footprint = 1000
 total = 0
 
 while cap.isOpened():
@@ -61,7 +87,7 @@ while cap.isOpened():
             print(numbers)
             print("uniqueness", (total / len(footprint)) * 100.0, "%")
 
-            post_numbers(numbers, options.key)
+            post_numbers(numbers, addr, options.key)
 
         numbers[currentNumber] = int(sid)
         currentNumber += 1
