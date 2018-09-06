@@ -1,6 +1,6 @@
 # videorand
 
-videorand is a program that generate true random numbers in real-time
+videorand is a program that generates true random numbers in real-time
 based on the input from a video camera and submits generated numbers via http.
 
 Example of use
