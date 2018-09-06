@@ -1,8 +1,22 @@
+import sys
+from optparse import OptionParser
+
 import cv2
 import numpy as np
 
 from post import post_numbers
 from videorand import serialize_frame
+
+parser = OptionParser()
+parser.add_option("-f", "--key", dest="key",
+                  help="key address of the host", metavar="KEY")
+
+(options, args) = parser.parse_args()
+if options.key is None:
+    print("--key was not provided!")
+    sys.exit()
+
+print("key is", options.key)
 
 np.seterr(over='ignore')
 cap = cv2.VideoCapture(0)
@@ -13,7 +27,7 @@ currentNumber = 0
 for i in range(0, max_numbers):
     numbers.append(i)
 
-print("Capturing the video...")
+print("capturing the video...")
 print("max frames:", max_numbers)
 print("chunk size:", chunk_size)
 
@@ -43,7 +57,7 @@ while cap.isOpened():
             print(numbers)
             print("uniqueness", (total / len(footprint)) * 100.0, "%")
 
-            post_numbers(numbers)
+            post_numbers(numbers, options.key)
 
         numbers[currentNumber] = int(sid)
         currentNumber += 1
