@@ -2,8 +2,13 @@
 
 videorand is a program that generates true random numbers in real-time
 based on the input from a video camera and submits generated numbers via http.
-
-Example of use
+## Installation
+```bash
+$ pip3 install numpy
+$ pip3 install opencv-python
+$ git clone https://github.com/kisulken/videorand
+```
+## Example of use
 ```bash
 $ python3 capture.py --addr="127.0.0.1:7890" --key="mySecrectKeyHanlder"
 ```
